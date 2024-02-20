@@ -1,0 +1,52 @@
+version: '3.7'
+
+services:
+  jupyter:
+    build: .
+    container_name: jupyter
+    env_file:
+      - .env 
+    volumes:
+      - '..:/usr/src/data'
+    ports:
+      - '8888:8888'
+    command: "start-notebook.sh --NotebookApp.token="
+
+  mongodb:
+    image: mongo 
+    container_name: mongodb
+    env_file:
+      - .env
+    volumes:
+      - ../databases/mongo/data:/data:rw
+    ports:
+      - '27017:27017'
+    restart: always
+
+  mongo-express:
+    image: mongo-express 
+    container_name: mongo-express
+    env_file:
+      - .env 
+    ports:
+      - '8889:8081'
+    depends_on: 
+      - mongodb
+    restart: always
+
+  neo4j:
+    image: neo4j
+    container_name: neo4j
+    env_file:
+      - .env
+    volumes:
+      - ../databases/neo4j/data:/data:rw
+      - ../databases/neo4j/import:/import:rw
+    ports:
+      - '7474:7474'
+      - '7687:7687'
+    restart: always
+
+
+
+
